@@ -1,0 +1,31 @@
+#!/bin/bash
+
+DAY=$1
+if [ -z "$DAY" ]; then
+    echo "usage: ./get_input <aoc day #>"
+    exit 1
+fi
+
+# cookies file
+FILEPATH=.cookies
+if ! test -f "$FILEPATH"; then
+    echo "place your aoc \`SESSION\` cookie in \`.cookies\` file."
+    echo "session=<your session cookie>"
+    exit 1
+fi
+
+DAY_DIR=`printf "day%02d" $DAY`
+if ! test -d $DAY_DIR; then
+    mkdir $DAY_DIR
+fi
+OUTPUT_PATH="$DAY_DIR/input.txt" 
+
+RESPONSE=$(curl -s -b `cat .cookies` -w "%{http_code}" https://adventofcode.com/2021/day/$DAY/input)
+RESP_BODY="${RESPONSE::-4}"
+HTTP_CODE=$(echo $RESPONSE | tail -c 4)
+if [[ $HTTP_CODE == 404 ]]; then
+    echo "$RESP_BODY"
+else
+    echo "$RESP_BODY" > $OUTPUT_PATH
+    echo "puzzle input saved at \`$OUTPUT_PATH\`"
+fi
