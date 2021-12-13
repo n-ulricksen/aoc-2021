@@ -33,7 +33,7 @@ func (c cave) findPathsToEnd(room string, visited map[string]int) int {
 	if room == end {
 		return 1
 	}
-	if visited[room] >= 1 {
+	if visited[room] > 0 {
 		return 0
 	}
 
@@ -59,7 +59,7 @@ func (c cave) findPathsToEnd2(room string, visited map[string]int, visitedSmallR
 	if room == end {
 		return 1
 	}
-	if visited[room] >= 1 {
+	if visited[room] > 0 {
 		if visitedSmallRoomTwice || room == start {
 			return 0
 		}
