@@ -15,7 +15,7 @@ type Node struct {
 // node's "Distance" property to the length of the shortest path from
 // the source node.
 func Dijkstra(graph map[*Node][]*Node, source *Node) {
-	// Initialize distances to "inifinity"
+	// Initialize distances to "infinity"
 	for node := range graph {
 		node.Distance = math.MaxInt64
 	}
