@@ -5,10 +5,45 @@ import (
 	"math"
 )
 
-// Graph node
+// Node is a graph node used in Dijkstra's algorithm.
 type Node struct {
 	Weight   int
-	Priority int
+	Distance int
+}
+
+// Dijkstra performs Dijkstra's algorithm on the given graph, setting each
+// node's "Distance" property to the length of the shortest path from
+// the source node.
+func Dijkstra(graph map[*Node][]*Node, source *Node) {
+	// Initialize distances to "inifinity"
+	for node := range graph {
+		node.Distance = math.MaxInt64
+	}
+	source.Distance = 0
+
+	// Initialize queue
+	queue := &minPQ{}
+	heap.Init(queue)
+	heap.Push(queue, source)
+
+	visited := make(map[*Node]bool)
+
+	// Compute
+	for queue.Len() > 0 {
+		item := heap.Pop(queue).(*Node)
+		visited[item] = true
+
+		for _, neighbor := range graph[item] {
+			if visited[neighbor] {
+				continue
+			}
+			alt := item.Distance + neighbor.Weight
+			if alt < neighbor.Distance {
+				neighbor.Distance = alt
+				heap.Push(queue, neighbor)
+			}
+		}
+	}
 }
 
 // Minimum Priority Queue
@@ -17,7 +52,7 @@ type minPQ []*Node
 func (pq minPQ) Len() int { return len(pq) }
 
 func (pq minPQ) Less(i, j int) bool {
-	return pq[i].Priority < pq[j].Priority
+	return pq[i].Distance < pq[j].Distance
 }
 
 func (pq minPQ) Swap(i, j int) {
@@ -36,42 +71,4 @@ func (pq *minPQ) Pop() interface{} {
 	old[n-1] = nil // avoid memory leak
 	*pq = old[:n-1]
 	return ret
-}
-
-func Dijkstra(graph map[*Node][]*Node, start *Node,
-	end *Node) map[*Node]int {
-
-	// Initialize distance map
-	dist := make(map[*Node]int)
-	for node := range graph {
-		dist[node] = math.MaxInt32
-	}
-	dist[start] = 0
-
-	// Initialize queue
-	queue := &minPQ{}
-	heap.Init(queue)
-	heap.Push(queue, start)
-
-	visited := make(map[*Node]bool)
-
-	// Compute!
-	for queue.Len() > 0 {
-		item := heap.Pop(queue).(*Node)
-		visited[item] = true
-
-		for _, neighbor := range graph[item] {
-			if visited[neighbor] {
-				continue
-			}
-			alt := dist[item] + neighbor.Weight
-			if alt < dist[neighbor] {
-				dist[neighbor] = alt
-				neighbor.Priority = alt
-				heap.Push(queue, neighbor)
-			}
-		}
-	}
-
-	return dist
 }
