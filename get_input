@@ -16,7 +16,7 @@ fi
 
 DAY_DIR=`printf "day%02d" $DAY`
 if ! test -d $DAY_DIR; then
-    mkdir $DAY_DIR
+    cp -r day00 $DAY_DIR
 fi
 OUTPUT_PATH="$DAY_DIR/input.txt" 
 
