@@ -6,6 +6,11 @@ if [ -z "$DAY" ]; then
     exit 1
 fi
 
+YEAR=$2
+if [ -z "$YEAR" ]; then
+    YEAR=$(date +"%Y")
+fi
+
 # cookies file
 FILEPATH=.cookies
 if ! test -f "$FILEPATH"; then
@@ -20,7 +25,7 @@ if ! test -d $DAY_DIR; then
 fi
 OUTPUT_PATH="$DAY_DIR/input.txt" 
 
-RESPONSE=$(curl -s -b `cat .cookies` -w "%{http_code}" https://adventofcode.com/2021/day/$DAY/input)
+RESPONSE=$(curl -s -b `cat .cookies` -w "%{http_code}" https://adventofcode.com/$YEAR/day/$DAY/input)
 RESP_BODY="${RESPONSE::-4}"
 HTTP_CODE=$(echo $RESPONSE | tail -c 4)
 if [[ $HTTP_CODE == 404 ]]; then
